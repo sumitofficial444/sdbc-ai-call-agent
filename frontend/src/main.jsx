@@ -4,7 +4,7 @@ import{Mic,MicOff,ArrowUpRight,ArrowUp,Phone,BookOpen,Users,Check,Headphones,Rad
 import{VoiceSession}from'./voice';
 import'./style.css';
 
-async function api(path,options){const r=await fetch('/api'+path,options);if(!r.ok)throw new Error(r.status===400?'Please check the details and consent.':'Backend unavailable. Start the Node.js backend on port 8080.');return r.json();}
+async function api(path,options){const backend=import.meta.env.VITE_BACKEND_URL;const r=await fetch(`${backend}/api${path}`,options);if(!r.ok)throw new Error(r.status===400?'Please check the details and consent.':'Backend unavailable.');return r.json();}
 const post=(path,data)=>api(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
 const suggestions=['Coding mein interest hai','SDBC kyun choose karun?','Fees ka budget concern hai','Admission ka next step kya hai?'];
 function App(){
