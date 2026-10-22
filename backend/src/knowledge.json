@@ -1,0 +1,12 @@
+{
+  "name": "SDBC · BGI Indore",
+  "source": "https://sdbc.ac.in/",
+  "checkedOn": "2026-10-15",
+  "disclaimer": "Independent prototype, not an official college service. Website lists programs across SDBCE and SDBCT; institute-specific availability must be confirmed.",
+  "courses": ["B.Tech — Computer Science & Engineering", "B.Tech — Information Technology", "B.Tech — Electronics & Communication Engineering", "B.Tech — Mechanical Engineering", "B.Tech — Civil Engineering", "B.Tech — CSE (AI & ML)", "B.Tech — CSE (Data Science)", "B.Tech — CSE (Cyber Security)", "B.Tech — Artificial Intelligence & Machine Learning", "M.Tech — Computer Science & Engineering", "M.Tech — Digital Communication", "M.Tech — Thermal System & Design", "M.Tech — Structural Engineering", "BBA", "MBA"],
+  "address": "Umaria, A. B. Road, Near Rau, Indore, Madhya Pradesh 453331",
+  "phone": "+91-9109954633",
+  "facilities": ["Library", "Labs", "Sports", "Transportation", "Canteen"],
+  "unknown": ["Current tuition and hostel fees", "Course-specific eligibility", "Seat availability", "Admission deadlines", "Scholarship amounts", "Hostel availability", "Institute-specific course mapping"],
+  "admissions": "Contact the admission enquiry team for current process and institute-specific requirements. No admission or callback is actually booked by this prototype."
+}
