@@ -6,7 +6,7 @@ import {createApp} from './app.js';
 import {attachVoice} from './voice.js';
 dotenv.config({path:fileURLToPath(new URL('../.env',import.meta.url))});
 const port=Number(process.env.PORT||8080);
-const origins=new Set(['http://127.0.0.1:5173','http://localhost:5173',`http://127.0.0.1:${port}`,`http://localhost:${port}`]);
+const origins=new Set(['http://127.0.0.1:5173','http://localhost:5173',`http://127.0.0.1:${port}`,`http://localhost:${port}`,'https://sdbc-ai-call-agent.vercel.app']);
 try{
  const store=await createStore({uri:process.env.MONGODB_URI,mode:process.env.LEAD_STORE||'file'});
  const options={store,key:process.env.GEMINI_API_KEY?.trim()||'',model:process.env.GEMINI_MODEL||'gemini-3.8-live',origins};
