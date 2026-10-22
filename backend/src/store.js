@@ -3,7 +3,8 @@ import { mkdir, readFile, writeFile, rename } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-export async function createStore({ uri, mode = 'file', directory = fileURLToPath(new URL('../data/', import.meta.url)) } = {}) {
+const DEFAULT_DIR = process.env.VERCEL ? '/tmp/sdbc-data' : fileURLToPath(new URL('../data/', import.meta.url));
+export async function createStore({ uri, mode = 'file', directory = DEFAULT_DIR } = {}) {
     if (uri) {
         const connection = await mongoose.createConnection(uri, { serverSelectionTimeoutMS: 5000, bufferCommands: false }).asPromise();
         const Lead = connection.model('Lead', new mongoose.Schema({ id: { type: String, required: true, unique: true }, name: { type: String, required: true, maxLength: 100 }, phone: { type: String, required: true, match: /^[6-9][0-9]{9}$/ }, course: { type: String, required: true }, consent: { type: Boolean, required: true }, created_at: { type: String, required: true } }, { versionKey: false }));

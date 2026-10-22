@@ -2,7 +2,9 @@ import express from 'express';
 import {answer,knowledge,validateLead} from './answers.js';
 import {fileURLToPath} from 'node:url';
 import {existsSync} from 'node:fs';
-export function createApp({store,key='',model='gemini-3.8-live',origins}){
+export function createApp({store,key='',model='gemini-3.8-live',origins,isAllowedOrigin}){
+ // build a checker that works with either a Set or a function
+ const allowed=isAllowedOrigin??(o=>!o||origins.has(o));
  const app=express();app.disable('x-powered-by');
  // CORS — set headers before any route
  app.use((req,res,next)=>{
@@ -10,14 +12,13 @@ export function createApp({store,key='',model='gemini-3.8-live',origins}){
   res.set('Referrer-Policy','no-referrer');
   if(req.path.startsWith('/api/'))res.set('Cache-Control','no-store');
   const origin=req.headers.origin;
-  if(origin&&origins.has(origin)){
-   res.set('Access-Control-Allow-Origin',origin);
+  if(allowed(origin)){
+   if(origin){res.set('Access-Control-Allow-Origin',origin);res.set('Vary','Origin');}
    res.set('Access-Control-Allow-Methods','GET,POST,OPTIONS');
    res.set('Access-Control-Allow-Headers','Content-Type');
-   res.set('Vary','Origin');
   }
   if(req.method==='OPTIONS')return res.sendStatus(204); // preflight
-  if(origin&&!origins.has(origin))return res.status(403).json({error:'Origin not allowed.'});
+  if(origin&&!allowed(origin))return res.status(403).json({error:'Origin not allowed.'});
   next();
  });
  app.use(express.json({limit:'16kb'}));
