@@ -4,10 +4,25 @@ import {fileURLToPath} from 'node:url';
 import {existsSync} from 'node:fs';
 export function createApp({store,key='',model='gemini-3.8-live',origins}){
  const app=express();app.disable('x-powered-by');
- app.use((req,res,next)=>{res.set('X-Content-Type-Options','nosniff');res.set('Referrer-Policy','no-referrer');if(req.path.startsWith('/api/'))res.set('Cache-Control','no-store');if(req.headers.origin&&!origins.has(req.headers.origin))return res.status(403).json({error:'Origin not allowed.'});next();});
+ // CORS — set headers before any route
+ app.use((req,res,next)=>{
+  res.set('X-Content-Type-Options','nosniff');
+  res.set('Referrer-Policy','no-referrer');
+  if(req.path.startsWith('/api/'))res.set('Cache-Control','no-store');
+  const origin=req.headers.origin;
+  if(origin&&origins.has(origin)){
+   res.set('Access-Control-Allow-Origin',origin);
+   res.set('Access-Control-Allow-Methods','GET,POST,OPTIONS');
+   res.set('Access-Control-Allow-Headers','Content-Type');
+   res.set('Vary','Origin');
+  }
+  if(req.method==='OPTIONS')return res.sendStatus(204); // preflight
+  if(origin&&!origins.has(origin))return res.status(403).json({error:'Origin not allowed.'});
+  next();
+ });
  app.use(express.json({limit:'16kb'}));
+ app.get('/',(_,res)=>res.type('html').send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>SDBC AI — Backend</title><style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f172a;font-family:system-ui,sans-serif;color:#f8fafc}.card{text-align:center;padding:2.5rem 3rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:1.5rem;backdrop-filter:blur(10px)}.dot{display:inline-block;width:12px;height:12px;background:#22c55e;border-radius:50%;margin-right:.5rem;animation:pulse 2s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}h1{margin:.5rem 0;font-size:1.8rem;font-weight:700}p{color:#94a3b8;margin:.5rem 0}a{color:#818cf8;text-decoration:none}</style></head><body><div class="card"><span class="dot"></span><h1>Backend is running ✅</h1><p>SDBC AI Call Agent — API Server</p><p><a href="/api/health">/api/health →</a></p></div></body></html>`));
  app.get('/api/health',(_,res)=>res.json({status:'ok',voiceConfigured:!!key,model,storage:store.mode,remoteStorage:store.remote}));
-app.get('/',(_,res)=>res.type('html').send('<h1>Backend is running ✅</h1>'));
  app.get('/api/knowledge',(_,res)=>res.json(knowledge));
  app.post('/api/chat',(req,res)=>{
   if(typeof req.body?.text!=='string'||!req.body.text.trim()||req.body.text.length>1500)return res.status(400).json({error:'Provide a question of 1–1500 characters.'});
